@@ -1,0 +1,38 @@
+# === Java / Spring Boot ===
+target/
+*.jar
+*.war
+*.ear
+*.class
+
+# IDE / Build tools
+*.iml
+.idea/
+*.ipr
+*.iws
+*.project
+*.classpath
+*.settings/
+out/
+
+# Logs
+*.log
+
+# === Node / React ===
+node_modules/
+dist/
+build/
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# OS / Misc
+.DS_Store
+Thumbs.db
+target/
+node_modules/
+*.log
+*.iml
+.idea/
