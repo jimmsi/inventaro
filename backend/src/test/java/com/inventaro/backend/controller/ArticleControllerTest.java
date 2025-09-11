@@ -2,6 +2,7 @@ package com.inventaro.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inventaro.backend.dto.CreateArticleRequest;
+import com.inventaro.backend.dto.UpdateArticleRequest;
 import com.inventaro.backend.model.Article;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,5 +127,55 @@ class ArticleControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Article not found")));
     }
+
+    @Test
+    void updateMetadata_success() throws Exception {
+        CreateArticleRequest create = new CreateArticleRequest("Masks", 100, "pcs", 50);
+        String createdJson = mockMvc.perform(post("/articles")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(create)))
+                .andReturn().getResponse().getContentAsString();
+        Article created = objectMapper.readValue(createdJson, Article.class);
+
+        UpdateArticleRequest update = new UpdateArticleRequest("Surgical Masks", "box", 120);
+        mockMvc.perform(put("/articles/" + created.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(update)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Surgical Masks"))
+                .andExpect(jsonPath("$.unit").value("box"))
+                .andExpect(jsonPath("$.lowStockThreshold").value(120))
+                .andExpect(jsonPath("$.quantity").value(100));
+    }
+
+    @Test
+    void updateMetadata_invalid_returns400() throws Exception {
+        CreateArticleRequest create = new CreateArticleRequest("Gloves", 10, "box", 5);
+        String createdJson = mockMvc.perform(post("/articles")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(create)))
+                .andReturn().getResponse().getContentAsString();
+        Article created = objectMapper.readValue(createdJson, Article.class);
+
+        UpdateArticleRequest bad = new UpdateArticleRequest("", "box", -1);
+        mockMvc.perform(put("/articles/" + created.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bad)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("must")));
+    }
+
+    @Test
+    void updateMetadata_notFound_returns404() throws Exception {
+        UUID fakeId = UUID.randomUUID();
+        UpdateArticleRequest update = new UpdateArticleRequest("Any", "pcs", 10);
+
+        mockMvc.perform(put("/articles/" + fakeId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(update)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Article not found")));
+    }
+
 
 }
