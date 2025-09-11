@@ -6,6 +6,9 @@ import com.inventaro.backend.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
@@ -20,5 +23,16 @@ public class ArticleServiceImpl implements ArticleService {
         article.setUnit(request.getUnit().trim());
         article.setLowStockThreshold(request.getLowStockThreshold());
         return articleRepository.save(article);
+    }
+
+    @Override
+    public List<Article> getAllArticles() {
+        return articleRepository.findAll();
+    }
+
+    @Override
+    public Article getArticleById(UUID id) {
+        return articleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Article not found with id: " + id));
     }
 }
