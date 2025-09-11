@@ -40,7 +40,13 @@ public class ArticleController {
         return ResponseEntity.ok(article);
     }
 
-    // Handles validation errors for POST /articles
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        articleService.deleteArticle(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Handles validation errors for endpoints that use @Valid request bodies.
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationError(MethodArgumentNotValidException ex) {
         // NOTE:
@@ -54,7 +60,7 @@ public class ArticleController {
         return ResponseEntity.badRequest().body(errorMessage);
     }
 
-    // Handles "not found" cases for GET /articles/{id}
+    // Handles "not found" cases for all endpoints when an article with the given ID does not exist.
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleNotFound(IllegalArgumentException ex) {
         return ResponseEntity.status(404).body(ex.getMessage());

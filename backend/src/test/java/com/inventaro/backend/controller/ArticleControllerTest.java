@@ -100,4 +100,31 @@ class ArticleControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Article not found")));
     }
+
+    @Test
+    void deleteArticle_success() throws Exception {
+        CreateArticleRequest request = new CreateArticleRequest("Scalpel", 10, "pcs", 2);
+        String response = mockMvc.perform(post("/articles")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        Article created = objectMapper.readValue(response, Article.class);
+
+        mockMvc.perform(delete("/articles/" + created.getId()))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/articles/" + created.getId()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteArticle_notFound_returns404() throws Exception {
+        UUID fakeId = UUID.randomUUID();
+        mockMvc.perform(delete("/articles/" + fakeId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Article not found")));
+    }
+
 }

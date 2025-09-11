@@ -10,4 +10,5 @@ public interface ArticleService {
     Article createArticle(CreateArticleRequest request);
     List<Article> getAllArticles();
     Article getArticleById(UUID id);
+    void deleteArticle(UUID id);
 }
