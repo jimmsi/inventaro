@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +29,18 @@ public class ArticleController {
                 .body(created);
     }
 
+    @GetMapping
+    public ResponseEntity<List<Article>> getAll() {
+        return ResponseEntity.ok(articleService.getAllArticles());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Article> getById(@PathVariable UUID id) {
+        Article article = articleService.getArticleById(id);
+        return ResponseEntity.ok(article);
+    }
+
+    // Handles validation errors for POST /articles
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationError(MethodArgumentNotValidException ex) {
         // NOTE:
@@ -39,4 +53,11 @@ public class ArticleController {
                 .getDefaultMessage();
         return ResponseEntity.badRequest().body(errorMessage);
     }
+
+    // Handles "not found" cases for GET /articles/{id}
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleNotFound(IllegalArgumentException ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
 }
