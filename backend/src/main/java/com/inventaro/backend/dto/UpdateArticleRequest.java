@@ -7,14 +7,10 @@ import lombok.*;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-public class CreateArticleRequest {
+public class UpdateArticleRequest {
 
     @NotBlank(message = "name must not be empty")
     private String name;
-
-    @NotNull(message = "quantity is required")
-    @Min(value = 0, message = "quantity must be ≥ 0")
-    private Integer quantity;
 
     @NotBlank(message = "unit must not be empty")
     private String unit;

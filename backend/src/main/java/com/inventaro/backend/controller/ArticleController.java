@@ -1,6 +1,8 @@
 package com.inventaro.backend.controller;
 
 import com.inventaro.backend.dto.CreateArticleRequest;
+import com.inventaro.backend.dto.UpdateArticleRequest;
+import com.inventaro.backend.dto.UpdateQuantityRequest;
 import com.inventaro.backend.model.Article;
 import com.inventaro.backend.service.ArticleService;
 import jakarta.validation.Valid;
@@ -44,6 +46,24 @@ public class ArticleController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         articleService.deleteArticle(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Article> updateMetadata(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateArticleRequest request) {
+
+        Article updated = articleService.updateArticleMetadata(id, request);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/{id}/quantity")
+    public ResponseEntity<Article> updateQuantity(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateQuantityRequest request) {
+
+        Article updated = articleService.updateQuantity(id, request);
+        return ResponseEntity.ok(updated);
     }
 
     // Handles validation errors for endpoints that use @Valid request bodies.
