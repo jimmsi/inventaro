@@ -35,4 +35,13 @@ public class ArticleServiceImpl implements ArticleService {
         return articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Article not found with id: " + id));
     }
+
+    @Override
+    public void deleteArticle(UUID id) {
+        if (!articleRepository.existsById(id)) {
+            throw new IllegalArgumentException("Article not found with id: " + id);
+        }
+        articleRepository.deleteById(id);
+    }
+
 }
