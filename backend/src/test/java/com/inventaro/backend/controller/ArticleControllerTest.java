@@ -3,6 +3,7 @@ package com.inventaro.backend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inventaro.backend.dto.CreateArticleRequest;
 import com.inventaro.backend.dto.UpdateArticleRequest;
+import com.inventaro.backend.dto.UpdateQuantityRequest;
 import com.inventaro.backend.model.Article;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,5 +178,51 @@ class ArticleControllerTest {
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Article not found")));
     }
 
+    @Test
+    void updateQuantity_success() throws Exception {
+        CreateArticleRequest create = new CreateArticleRequest("Masks", 100, "pcs", 50);
+        String createdJson = mockMvc.perform(post("/articles")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(create)))
+                .andReturn().getResponse().getContentAsString();
+        Article created = objectMapper.readValue(createdJson, Article.class);
+
+        UpdateQuantityRequest update = new UpdateQuantityRequest(150);
+        mockMvc.perform(patch("/articles/" + created.getId() + "/quantity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(update)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.quantity").value(150))
+                .andExpect(jsonPath("$.name").value("Masks")); // other fields unchanged
+    }
+
+    @Test
+    void updateQuantity_invalid_returns400() throws Exception {
+        CreateArticleRequest create = new CreateArticleRequest("Gloves", 10, "box", 5);
+        String createdJson = mockMvc.perform(post("/articles")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(create)))
+                .andReturn().getResponse().getContentAsString();
+        Article created = objectMapper.readValue(createdJson, Article.class);
+
+        UpdateQuantityRequest bad = new UpdateQuantityRequest(-5);
+        mockMvc.perform(patch("/articles/" + created.getId() + "/quantity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bad)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("must be ≥ 0")));
+    }
+
+    @Test
+    void updateQuantity_notFound_returns404() throws Exception {
+        UUID fakeId = UUID.randomUUID();
+        UpdateQuantityRequest update = new UpdateQuantityRequest(20);
+
+        mockMvc.perform(patch("/articles/" + fakeId + "/quantity")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(update)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Article not found")));
+    }
 
 }

@@ -18,4 +18,8 @@ public class UpdateArticleRequest {
     @NotNull(message = "lowStockThreshold is required")
     @Min(value = 0, message = "lowStockThreshold must be ≥ 0")
     private Integer lowStockThreshold;
+
+    // NOTE:
+    // Using Integer + @NotNull ensures we catch missing fields.
+    // The @Min annotation prevents negative stock values.
 }

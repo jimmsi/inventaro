@@ -2,6 +2,7 @@ package com.inventaro.backend.service;
 
 import com.inventaro.backend.dto.CreateArticleRequest;
 import com.inventaro.backend.dto.UpdateArticleRequest;
+import com.inventaro.backend.dto.UpdateQuantityRequest;
 import com.inventaro.backend.model.Article;
 
 import java.util.List;
@@ -13,4 +14,5 @@ public interface ArticleService {
     Article getArticleById(UUID id);
     void deleteArticle(UUID id);
     Article updateArticleMetadata(UUID id, UpdateArticleRequest request);
+    Article updateQuantity(UUID id, UpdateQuantityRequest request);
 }
