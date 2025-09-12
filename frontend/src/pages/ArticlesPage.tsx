@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { getAllArticles, type Article } from "@/services/articleService"
+
 import {
     Table,
     TableBody,
@@ -8,6 +9,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+
+import { CheckCircle, AlertTriangle } from "lucide-react"
 
 function ArticlesPage() {
     const [articles, setArticles] = useState<Article[]>([])
@@ -47,20 +50,33 @@ function ArticlesPage() {
                             <TableHead className="font-semibold text-gray-500 p-4">#</TableHead>
                             <TableHead className="font-semibold text-gray-500 p-4">Antal</TableHead>
                             <TableHead className="font-semibold text-gray-500 p-4">Enhet</TableHead>
-                            <TableHead className="font-semibold text-gray-500 p-4">Saldo-status</TableHead>
+                            <TableHead className="font-semibold text-gray-500 p-4">Lagerstatus</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {articles.map(article => (
-                            <TableRow key={article.id} className="hover:bg-accent">
-                                <TableCell className="font-medium p-4">{article.name}</TableCell>
-                                <TableCell className="p-4">{article.quantity}</TableCell>
-                                <TableCell className="p-4">{article.unit}</TableCell>
-                                <TableCell>
-                                    <span className="text-muted-foreground p-2">OK</span>
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                        {articles.map(article => {
+                            const isLowStock = article.quantity < article.lowStockThreshold
+                            return (
+                                <TableRow key={article.id} className="hover:bg-accent">
+                                    <TableCell className="font-medium p-4">{article.name}</TableCell>
+                                    <TableCell className="p-4">{article.quantity}</TableCell>
+                                    <TableCell className="p-4">{article.unit}</TableCell>
+                                    <TableCell className="p-4 flex items-center space-x-2">
+                                        {isLowStock ? (
+                                            <>
+                                                <AlertTriangle className="w-4 h-4 text-red-500" />
+                                                <span className="text-red-600">Behöver fyllas på</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <CheckCircle className="w-4 h-4 text-green-600" />
+                                                <span className="text-green-600">I lager</span>
+                                            </>
+                                        )}
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })}
                     </TableBody>
                 </Table>
             </div>
