@@ -3,6 +3,7 @@ import {
     getAllArticles,
     createArticle,
     updateArticle,
+    updateArticleQuantity,
     type Article,
 } from "@/services/articleService"
 
@@ -93,6 +94,27 @@ function ArticlePage() {
         }
     }
 
+    const handleUpdateQuantity = async (article: Article, newQuantity: number) => {
+        if (newQuantity < 0) return
+        try {
+            const updated = await updateArticleQuantity(article.id, newQuantity)
+            setArticles((prev) =>
+                prev.map((a) => (a.id === updated.id ? updated : a))
+            )
+            toast({
+                title: "Lagersaldo uppdaterat",
+                description: `${updated.name} har nu ${updated.quantity} ${updated.unit}.`,
+            })
+        } catch (err: unknown) {
+            toast({
+                title: "Fel vid uppdatering",
+                description:
+                    err instanceof Error ? err.message : "Kunde inte uppdatera lagersaldo",
+                variant: "destructive",
+            })
+        }
+    }
+
     if (loading) return <p className="p-4">Loading articles...</p>
     if (error) return <p className="p-4 text-red-500">Error: {error}</p>
 
@@ -129,6 +151,7 @@ function ArticlePage() {
                     setArticleToEdit(article)
                     setOpenEdit(true)
                 }}
+                onUpdateQuantity={handleUpdateQuantity}
             />
 
             {/* Edit-dialog */}
