@@ -47,3 +47,20 @@ export async function updateArticle(
     return response.json()
 }
 
+export async function updateArticleQuantity(id: string, quantity: number): Promise<Article> {
+    const response = await fetch(`http://localhost:8080/articles/${id}/quantity`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ quantity }),
+    })
+
+    if (!response.ok) {
+        throw new Error("Failed to update article quantity")
+    }
+
+    return response.json()
+}
+
+
