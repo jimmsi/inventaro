@@ -13,3 +13,18 @@ export async function getAllArticles(): Promise<Article[]> {
     }
     return response.json()
 }
+
+export async function createArticle(article: Omit<Article, "id">): Promise<Article> {
+    const response = await fetch("http://localhost:8080/articles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(article),
+    })
+
+    if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(errorText || "Failed to create article")
+    }
+
+    return response.json()
+}
