@@ -63,4 +63,15 @@ export async function updateArticleQuantity(id: string, quantity: number): Promi
     return response.json()
 }
 
+export async function deleteArticle(id: string): Promise<void> {
+    const response = await fetch(`http://localhost:8080/articles/${id}`, {
+        method: "DELETE",
+    })
+
+    if (!response.ok) {
+        throw new Error("Failed to delete article")
+    }
+}
+
+
 
