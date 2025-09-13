@@ -4,6 +4,7 @@ import {
     createArticle,
     updateArticle,
     updateArticleQuantity,
+    deleteArticle,
     type Article,
 } from "@/services/articleService"
 
@@ -31,6 +32,10 @@ function ArticlePage() {
 
     const [submitting, setSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState<string | null>(null)
+
+    const [openDelete, setOpenDelete] = useState(false)
+    const [articleToDelete, setArticleToDelete] = useState<Article | null>(null)
+
 
     const { toast } = useToast()
 
@@ -115,6 +120,27 @@ function ArticlePage() {
         }
     }
 
+    const handleDelete = async () => {
+        if (!articleToDelete) return
+        try {
+            await deleteArticle(articleToDelete.id)
+            setArticles((prev) => prev.filter((a) => a.id !== articleToDelete.id))
+            setOpenDelete(false)
+            setArticleToDelete(null)
+            toast({
+                title: "Artikel raderad",
+                description: `${articleToDelete.name} togs bort.`,
+            })
+        } catch (err: unknown) {
+            toast({
+                title: "Fel vid radering",
+                description: err instanceof Error ? err.message : "Kunde inte ta bort artikel",
+                variant: "destructive",
+            })
+        }
+    }
+
+
     if (loading) return <p className="p-4">Loading articles...</p>
     if (error) return <p className="p-4 text-red-500">Error: {error}</p>
 
@@ -152,7 +178,12 @@ function ArticlePage() {
                     setOpenEdit(true)
                 }}
                 onUpdateQuantity={handleUpdateQuantity}
+                onDelete={(article) => {
+                    setArticleToDelete(article)
+                    setOpenDelete(true)
+                }}
             />
+
 
             {/* Edit-dialog */}
             <Dialog open={openEdit} onOpenChange={setOpenEdit}>
@@ -171,6 +202,34 @@ function ArticlePage() {
                     )}
                 </DialogContent>
             </Dialog>
+
+            <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Bekräfta radering</DialogTitle>
+                    </DialogHeader>
+                    {articleToDelete && (
+                        <div className="space-y-4">
+                            <p>Är du säker på att du vill ta bort <strong>{articleToDelete.name}</strong>?</p>
+                            <div className="flex justify-end space-x-2">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setOpenDelete(false)}
+                                >
+                                    Avbryt
+                                </Button>
+                                <Button
+                                    variant="destructive"
+                                    onClick={handleDelete}
+                                >
+                                    Ta bort
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
+
         </div>
     )
 }
