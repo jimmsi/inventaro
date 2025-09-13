@@ -1,10 +1,10 @@
 import { Toaster } from "@/components/ui/toaster"
-import ArticlesPage from "@/pages/ArticlesPage.tsx";
+import ArticlePage from "@/pages/ArticlePage.tsx";
 
 function App() {
     return (
         <>
-            <ArticlesPage />
+            <ArticlePage />
             <Toaster />
         </>
     )
