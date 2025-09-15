@@ -19,7 +19,19 @@ async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
         throw new Error(errorText || `Request failed with status ${response.status}`)
     }
 
-    return response.json()
+    // Case 1: Explicitly handle 204 No Content
+    if (response.status === 204) {
+        return undefined as T
+    }
+
+    // Case 2: Handle empty body responses (sometimes APIs return 200 with no content)
+    const text = await response.text()
+    if (!text) {
+        return undefined as T
+    }
+
+    // Case 3: Parse JSON
+    return JSON.parse(text) as T
 }
 
 export async function getAllArticles(): Promise<Article[]> {
