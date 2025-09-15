@@ -27,8 +27,8 @@ function ArticleTable({articles, onEdit, onUpdateQuantity, onDelete}: ArticleTab
                         <TableHead className="font-semibold text-gray-500 p-2">Antal</TableHead>
                         <TableHead className="font-semibold text-gray-500 p-2">Enhet</TableHead>
                         <TableHead className="font-semibold text-gray-500 p-2">Lagerstatus</TableHead>
-                        <TableHead className="font-semibold text-gray-500 p-2"></TableHead> {/* Increment-decrement */}
-                        <TableHead className="font-semibold text-gray-500 p-2"></TableHead> {/* Edit/Delete-knapp */}
+                        <TableHead className="font-semibold text-gray-500 p-2"></TableHead>{/* Increment-decrement */}
+                        <TableHead className="font-semibold text-gray-500 p-2"></TableHead>{/* Edit/Delete-knapp */}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
