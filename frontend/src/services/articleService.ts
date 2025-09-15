@@ -6,71 +6,55 @@ export interface Article {
     lowStockThreshold: number
 }
 
-export async function getAllArticles(): Promise<Article[]> {
-    const response = await fetch("http://localhost:8080/articles")
-    if (!response.ok) {
-        throw new Error("Failed to fetch articles")
-    }
-    return response.json()
-}
+const API_URL = "http://localhost:8080"
 
-export async function createArticle(article: Omit<Article, "id">): Promise<Article> {
-    const response = await fetch("http://localhost:8080/articles", {
-        method: "POST",
+async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
+    const response = await fetch(url, {
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(article),
+        ...options,
     })
 
     if (!response.ok) {
         const errorText = await response.text()
-        throw new Error(errorText || "Failed to create article")
+        throw new Error(errorText || `Request failed with status ${response.status}`)
     }
 
     return response.json()
 }
 
+export async function getAllArticles(): Promise<Article[]> {
+    return apiFetch<Article[]>(`${API_URL}/articles`)
+}
+
+export async function createArticle(article: Omit<Article, "id">): Promise<Article> {
+    return apiFetch<Article>(`${API_URL}/articles`, {
+        method: "POST",
+        body: JSON.stringify(article),
+    })
+}
+
+// NOTE - Update article (only name, unit, and lowStockThreshold)
 export async function updateArticle(
     id: string,
     updated: Omit<Article, "id" | "quantity">
 ): Promise<Article> {
-    const response = await fetch(`http://localhost:8080/articles/${id}`, {
+    return apiFetch<Article>(`${API_URL}/articles/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updated),
     })
-
-    if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(errorText || "Failed to update article")
-    }
-
-    return response.json()
 }
 
 export async function updateArticleQuantity(id: string, quantity: number): Promise<Article> {
-    const response = await fetch(`http://localhost:8080/articles/${id}/quantity`, {
+    return apiFetch<Article>(`${API_URL}/articles/${id}/quantity`, {
         method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-        },
         body: JSON.stringify({ quantity }),
     })
-
-    if (!response.ok) {
-        throw new Error("Failed to update article quantity")
-    }
-
-    return response.json()
 }
 
 export async function deleteArticle(id: string): Promise<void> {
-    const response = await fetch(`http://localhost:8080/articles/${id}`, {
+    await apiFetch<void>(`${API_URL}/articles/${id}`, {
         method: "DELETE",
     })
-
-    if (!response.ok) {
-        throw new Error("Failed to delete article")
-    }
 }
 
 

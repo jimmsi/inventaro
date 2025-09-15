@@ -146,15 +146,18 @@ function ArticlePage() {
 
     return (
         <div className="bg-gray-100 min-h-screen p-12">
-            {/* Header + skapa-knapp */}
+
+            {/* Header */}
             <div className="flex items-center justify-between mb-10">
                 <div className="flex items-baseline space-x-2">
                     <h1 className="text-3xl font-bold">inventaro</h1>
                     <span className="text-2xl text-gray-500">materiallager</span>
                 </div>
+
+                {/* Create-dialog */}
                 <Dialog open={openCreate} onOpenChange={setOpenCreate}>
                     <DialogTrigger asChild>
-                        <Button className="bg-gray-200">Ny artikel</Button>
+                        <Button className="bg-gray-500 text-white hover:bg-gray-600">Ny artikel</Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
@@ -170,7 +173,7 @@ function ArticlePage() {
                 </Dialog>
             </div>
 
-            {/* Artikeltabell */}
+            {/* Article Table */}
             <ArticleTable
                 articles={articles}
                 onEdit={(article) => {
@@ -183,7 +186,6 @@ function ArticlePage() {
                     setOpenDelete(true)
                 }}
             />
-
 
             {/* Edit-dialog */}
             <Dialog open={openEdit} onOpenChange={setOpenEdit}>
@@ -203,6 +205,7 @@ function ArticlePage() {
                 </DialogContent>
             </Dialog>
 
+            {/* Delete-dialog */}
             <Dialog open={openDelete} onOpenChange={setOpenDelete}>
                 <DialogContent>
                     <DialogHeader>

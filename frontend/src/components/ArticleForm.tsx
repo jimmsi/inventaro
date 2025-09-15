@@ -113,7 +113,7 @@ function ArticleForm({
                 />
             </div>
             <div className="pt-4">
-                <Button type="submit" disabled={submitting} className="w-full bg-gray-200">
+                <Button type="submit" disabled={submitting} className="w-full bg-gray-200 hover:bg-gray-300">
                     {submitting ? (
                         <span className="inline-flex items-center gap-2">
             <Loader2 className="h-4 w-4 animate-spin"/>
