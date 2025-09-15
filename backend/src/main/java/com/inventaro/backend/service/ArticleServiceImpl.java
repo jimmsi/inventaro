@@ -47,7 +47,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Article updateArticleMetadata(UUID id, UpdateArticleRequest request) {
+    public Article updateArticleData(UUID id, UpdateArticleRequest request) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Article not found with id: " + id));
 

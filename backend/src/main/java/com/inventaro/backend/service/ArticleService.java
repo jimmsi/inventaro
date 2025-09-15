@@ -13,6 +13,6 @@ public interface ArticleService {
     List<Article> getAllArticles();
     Article getArticleById(UUID id);
     void deleteArticle(UUID id);
-    Article updateArticleMetadata(UUID id, UpdateArticleRequest request);
+    Article updateArticleData(UUID id, UpdateArticleRequest request);
     Article updateQuantity(UUID id, UpdateQuantityRequest request);
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 @AutoConfigureMockMvc
 class ArticleControllerTest {
@@ -130,7 +132,7 @@ class ArticleControllerTest {
     }
 
     @Test
-    void updateMetadata_success() throws Exception {
+    void updateArticleData_success() throws Exception {
         CreateArticleRequest create = new CreateArticleRequest("Masks", 100, "pcs", 50);
         String createdJson = mockMvc.perform(post("/articles")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -150,7 +152,7 @@ class ArticleControllerTest {
     }
 
     @Test
-    void updateMetadata_invalid_returns400() throws Exception {
+    void updateArticleData_invalid_returns400() throws Exception {
         CreateArticleRequest create = new CreateArticleRequest("Gloves", 10, "box", 5);
         String createdJson = mockMvc.perform(post("/articles")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -167,7 +169,7 @@ class ArticleControllerTest {
     }
 
     @Test
-    void updateMetadata_notFound_returns404() throws Exception {
+    void updateArticleData_notFound_returns404() throws Exception {
         UUID fakeId = UUID.randomUUID();
         UpdateArticleRequest update = new UpdateArticleRequest("Any", "pcs", 10);
 

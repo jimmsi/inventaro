@@ -19,7 +19,15 @@ public class UpdateArticleRequest {
     @Min(value = 0, message = "lowStockThreshold must be ≥ 0")
     private Integer lowStockThreshold;
 
-    // NOTE:
-    // Using Integer + @NotNull ensures we catch missing fields.
-    // The @Min annotation prevents negative stock values.
+    /*
+     * NOTE:
+     * This request updates the article's essential attributes:
+     * - name
+     * - unit
+     * - lowStockThreshold
+     *
+     * The quantity (current stock level) is considered a temporary/variable attribute
+     * and must be updated separately via UpdateQuantityRequest (PATCH).
+     */
+
 }

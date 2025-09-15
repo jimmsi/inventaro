@@ -48,12 +48,18 @@ public class ArticleController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Updates the "article data" (name, unit, and lowStockThreshold) of an article.
+     *
+     * NOTE: This endpoint does NOT update the quantity in stock.
+     * Quantity updates are handled separately through PATCH /articles/{id}/quantity.
+     */
     @PutMapping("/{id}")
-    public ResponseEntity<Article> updateMetadata(
+    public ResponseEntity<Article> updateArticleData(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateArticleRequest request) {
 
-        Article updated = articleService.updateArticleMetadata(id, request);
+        Article updated = articleService.updateArticleData(id, request);
         return ResponseEntity.ok(updated);
     }
 
